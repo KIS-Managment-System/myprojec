@@ -120,6 +120,7 @@ function getCurrentKey() {
 
 // Role-based menu items
 import { ref, computed, onMounted } from 'vue';
+import { styleProviderProps } from 'ant-design-vue/es/_util/cssinjs/StyleContext';
 
 const userRole = ref('admin'); // default role
 onMounted(() => {
@@ -244,9 +245,17 @@ onBeforeUnmount(() => window.removeEventListener('resize', handleResize));
             <div class="sidebar-container" :style="{ backgroundColor: isDarkMode ? '#343434FF' : '#FFFFFFFF' }">
 
                 <!-- 🟢 Logo Section -->
-                <div class="logo">
-                    <img src="https://www.paragonisc.edu.kh/wp-content/uploads/2023/08/Moeys-01.png" alt="Logo"
-                        class="logo-img" />
+                <div class="logo ">
+
+                    <div class="d-flex align-items-center p-2 bg-primary">
+                        <img src="/logo.jpg" alt="Logo" class="rounded-circle me-2" :style="{
+                            height: collapsed ? '36px' : '55px',
+                            width: collapsed ? '36px' : '55px',
+                            borderRadius: '50%'
+                        }" />
+                    </div>
+
+
                     <span v-if="!collapsed" class="logo-text">My School</span>
                 </div>
 
@@ -259,69 +268,22 @@ onBeforeUnmount(() => window.removeEventListener('resize', handleResize));
 
                 <!-- Collapse Button -->
                 <!-- Allows the sidebar to be collapsed or expanded -->
-                <a-button type="primary" style="margin: 10px" @click="toggleCollapsed">
+                <a-button type="primary" @click="toggleCollapsed" class="collapse-btn">
                     <MenuUnfoldOutlined v-if="collapsed" />
                     <MenuFoldOutlined v-else />
                 </a-button>
 
+                <!-- Theme Switch -->
 
-
-                <a-switch style="margin: 10px" :checked="isDarkMode" checked-children="Dark" un-checked-children="Light"
-                    @change="toggleTheme" />
-                <br>
 
 
                 <!-- Sidebar Menu -->
-                <!-- Contains navigation items. Scrollable if items overflow -->
                 <div class="menu-scroll  scroll">
                     <a-menu v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys" mode="inline" theme="light"
                         :inline-collapsed="collapsed" :items="menuItems" />
                 </div>
 
 
-
-                <div class="user-details" style="position: absolute;
-         bottom: 0; 
-         width: 100%;
-          padding: 10px;  
-           align-items: center; 
-           justify-content: space-between;
-      
-            
-           ">
-
-                    <!-- <a-avatar :size="34" src="https://avatars.githubusercontent.com/u/160134498?v=4"
-                        style="margin: 2px; ">
-
-                    </a-avatar> -->
-
-                    <div class="">
-                        <!-- <div class="text-base font-medium text-gray-800">
-                            {{ $page.props.auth.user.name }}
-                        </div> -->
-                        <div class=" " :href="route('profile.edit')">
-
-
-                            <ResponsiveNavLink :href="route('profile.edit')">
-                                <a-typography-title :level="5" v-if="!collapsed">
-                                    {{ $page.props.auth.user.email }}
-                                </a-typography-title>
-
-                            </ResponsiveNavLink>
-                        </div>
-                    </div>
-
-                    <div class=" ">
-
-                        <ResponsiveNavLink :href="route('logout')" method="post" as="button">
-                            Log Out
-                        </ResponsiveNavLink>
-                    </div>
-
-
-
-
-                </div>
 
 
 
@@ -337,10 +299,18 @@ onBeforeUnmount(() => window.removeEventListener('resize', handleResize));
 
             <!-- 🟢 Logo in Mobile Drawer -->
             <div class="logo">
-                <img src="https://www.paragonisc.edu.kh/wp-content/uploads/2023/08/Moeys-01.png" alt="Logo"
-                    class="logo-img" />
+                <div class="d-flex align-items-center p-2 bg-primary">
+                    <img src="/logo.jpg" alt="Logo" class="rounded-circle me-2" :style="{
+                        height: collapsed ? '36px' : '55px',
+                        width: collapsed ? '36px' : '55px',
+                        borderRadius: '50%'
+                    }" />
+                </div>
                 <span class="logo-text">My School</span>
             </div>
+
+
+
 
             <!-- Mobile Menu -->
             <!-- Scrollable menu items for mobile drawer -->
@@ -355,25 +325,30 @@ onBeforeUnmount(() => window.removeEventListener('resize', handleResize));
             <a-switch style="margin: 10px" :checked="isDarkMode" checked-children="Dark" un-checked-children="Light"
                 @change="toggleTheme" />
             <br>
+            <div class="flex items-center space-x-3">
+                <a-dropdown>
+                    <template #overlay>
+                        <a-menu>
+                            <a-menu-item :key="1" @click="$inertia.get(route('profile.edit'))">
+                                Profile
+                            </a-menu-item>
+                            <a-menu-item :key="2" @click="$inertia.post(route('logout'))">
+                                Log Out
+                            </a-menu-item>
+                        </a-menu>
+                    </template>
 
-  
-                <div class=" " :href="route('profile.edit')">
+                    <!-- Clickable Avatar -->
+                    <a-avatar :size="34"
+                        :src="$page.props.auth.user.profile_photo_url || 'https://avatars.githubusercontent.com/u/160134498?v=4'"
+                        style="cursor: pointer;" alt="User Avatar" />
+                </a-dropdown>
 
+                <!-- Email text vertically centered -->
+                <span v-if="!collapsed" class="text-sm  flex items-center">
+                    {{ $page.props.auth.user.email }}
+                </span>
 
-                    <ResponsiveNavLink :href="route('profile.edit')">
-                        <a-typography-title :level="5" v-if="!collapsed">
-                            {{ $page.props.auth.user.email }}
-                        </a-typography-title>
-
-                    </ResponsiveNavLink>
-                </div>
-       
-
-            <div class=" ">
-
-                <ResponsiveNavLink :href="route('logout')" method="post" as="button">
-                    Log Out
-                </ResponsiveNavLink>
             </div>
 
 
@@ -400,7 +375,7 @@ onBeforeUnmount(() => window.removeEventListener('resize', handleResize));
                     <a-button type="text" @click="goBack" style="margin-right: 8px;">
                         <ArrowLeftOutlined />
                     </a-button>
-                    <span>{{ props.headerTitle || '' }}</span>
+                    {{ props.headerTitle }}
                 </div>
 
                 <!-- Right side: Mobile menu toggle -->
@@ -409,12 +384,44 @@ onBeforeUnmount(() => window.removeEventListener('resize', handleResize));
                         <MenuUnfoldOutlined />
                     </a-button>
                 </div>
+
+
+
+
+                <div v-if="!isMobile" class="flex items-center space-x-3">
+
+                    <a-switch v-if="!isMobile" style="margin: 10px" :checked="isDarkMode" checked-children="Dark"
+                        un-checked-children="Light" @change="toggleTheme" />
+                    <a-dropdown>
+                        <template #overlay>
+                            <a-menu>
+                                <a-menu-item :key="1" @click="$inertia.get(route('profile.edit'))">
+                                    Profile
+                                </a-menu-item>
+                                <a-menu-item :key="2" @click="$inertia.post(route('logout'))">
+                                    Log Out
+                                </a-menu-item>
+                            </a-menu>
+                        </template>
+
+                        <!-- Clickable Avatar -->
+                        <a-avatar :size="34"
+                            :src="$page.props.auth.user.profile_photo_url || 'https://avatars.githubusercontent.com/u/160134498?v=4'"
+                            style="cursor: pointer;" alt="User Avatar" />
+                    </a-dropdown>
+
+                    <!-- Email text vertically centered -->
+                    <span class="text-sm  flex items-center">
+                        {{ $page.props.auth.user.email }}
+                    </span>
+                </div>
+
             </a-layout-header>
 
 
 
             <!-- Main content area -->
-            <a-layout-content class="menu-scroll p-5"
+            <a-layout-content class="menu-scroll p-5 h-100 "
                 :style="{ backgroundColor: isDarkMode ? '#232323FF' : '#FFFFFFFF' }">
                 <slot />
 
@@ -519,3 +526,4 @@ onBeforeUnmount(() => window.removeEventListener('resize', handleResize));
 
 
 </style>
+<!-- dd -->

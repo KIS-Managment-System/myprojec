@@ -1,20 +1,22 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
+
+
 </script>
 
 <template>
 
     <Head title="Dashboard" />
 
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :headerTitle="'Dashboard'">
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Dashboard
             </h2>
         </template>
 
-    
+
         <br>
 
         <a-space direction="vertical" :size="12">
@@ -27,7 +29,7 @@ import { Head } from '@inertiajs/vue3';
 
         <br> <br>
 
-        <div :style="{ width: '300px', border: '1px solid #d9d9d9', borderRadius: '4px' }">
+        <div :style="{ width: '300px', }">
             <a-calendar v-model:value="value" :fullscreen="false" @panelChange="onPanelChange" />
         </div>
 
