@@ -378,6 +378,9 @@ onBeforeUnmount(() => window.removeEventListener('resize', handleResize));
                     {{ props.headerTitle }}
                 </div>
 
+
+
+
                 <!-- Right side: Mobile menu toggle -->
                 <div v-if="isMobile">
                     <a-button type="primary" @click="showDrawer = true">
@@ -386,15 +389,18 @@ onBeforeUnmount(() => window.removeEventListener('resize', handleResize));
                 </div>
 
 
-
-
                 <div v-if="!isMobile" class="flex items-center space-x-3">
-
                     <a-switch v-if="!isMobile" style="margin: 10px" :checked="isDarkMode" checked-children="Dark"
                         un-checked-children="Light" @change="toggleTheme" />
                     <a-dropdown>
                         <template #overlay>
                             <a-menu>
+
+                                <a-menu-item class="text-sm  flex items-center">
+                                    {{ $page.props.auth.user.email }}
+                                </a-menu-item>
+
+
                                 <a-menu-item :key="1" @click="$inertia.get(route('profile.edit'))">
                                     Profile
                                 </a-menu-item>
@@ -403,17 +409,13 @@ onBeforeUnmount(() => window.removeEventListener('resize', handleResize));
                                 </a-menu-item>
                             </a-menu>
                         </template>
-
                         <!-- Clickable Avatar -->
                         <a-avatar :size="34"
                             :src="$page.props.auth.user.profile_photo_url || 'https://avatars.githubusercontent.com/u/160134498?v=4'"
                             style="cursor: pointer;" alt="User Avatar" />
                     </a-dropdown>
-
                     <!-- Email text vertically centered -->
-                    <span class="text-sm  flex items-center">
-                        {{ $page.props.auth.user.email }}
-                    </span>
+
                 </div>
 
             </a-layout-header>
