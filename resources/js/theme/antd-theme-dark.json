@@ -1,7 +1,8 @@
 {
   "token": {
-   "colorPrimary": "#5D6FA0FF",
+   "colorPrimary": "#585B66FF",
     "fontSize": 12,
-    "borderRadius": 16
+    "borderRadius": 16,
+    "colorBgLayout":  "#212121" 
   }
 }

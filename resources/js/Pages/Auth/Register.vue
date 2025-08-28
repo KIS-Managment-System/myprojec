@@ -1,11 +1,13 @@
-<script setup>
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
+import { Head, Link } from '@inertiajs/vue3';
 
+// i18n
+const { t } = useI18n();
+
+// Form
 const form = useForm({
     name: '',
     email: '',
@@ -21,93 +23,72 @@ const submit = () => {
 </script>
 
 <template>
-    <GuestLayout>
-        <Head title="Register" />
+    <div class="min-h-screen flex items-center justify-center bg-gray-100">
+        <div class="w-full max-w-md p-8 bg-white rounded-xl shadow-lg">
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="name" value="Name" />
+            <Head :title="t('register')" />
 
-                <TextInput
-                    id="name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.name"
-                    required
-                    autofocus
-                    autocomplete="name"
-                />
+            <h1 class="text-2xl font-bold text-center mb-6">{{ t('register') }}</h1>
 
-                <InputError class="mt-2" :message="form.errors.name" />
-            </div>
+            <a-form layout="vertical" @submit.prevent="submit">
+                <!-- Name -->
+                <a-form-item :label="t('name')" :validate-status="form.errors.name ? 'error' : ''"
+                    :help="form.errors.name">
+                    <a-input v-model:value="form.name" type="text" placeholder="John Doe" autocomplete="name" autofocus
+                        class="rounded-md" />
+                </a-form-item>
 
-            <div class="mt-4">
-                <InputLabel for="email" value="Email" />
+                <!-- Email -->
+                <a-form-item :label="t('email')" :validate-status="form.errors.email ? 'error' : ''"
+                    :help="form.errors.email">
+                    <a-input v-model:value="form.email" type="email" placeholder="example@email.com"
+                        autocomplete="username" class="rounded-md" />
+                </a-form-item>
 
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autocomplete="username"
-                />
+                <!-- Password -->
+                <a-form-item :label="t('password')" :validate-status="form.errors.password ? 'error' : ''"
+                    :help="form.errors.password">
+                    <a-input-password v-model:value="form.password" placeholder="••••••••" autocomplete="new-password"
+                        class="rounded-md" />
+                </a-form-item>
 
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
+                <!-- Confirm Password -->
+                <a-form-item :label="t('confirm_password')"
+                    :validate-status="form.errors.password_confirmation ? 'error' : ''"
+                    :help="form.errors.password_confirmation">
+                    <a-input-password v-model:value="form.password_confirmation" placeholder="••••••••"
+                        autocomplete="new-password" class="rounded-md" />
+                </a-form-item>
 
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
+                <!-- Submit Button -->
+                <a-form-item class="mt-4">
+                    <a-button type="primary" block :loading="form.processing" html-type="submit" class="font-semibold">
+                        {{ t('register') }}
+                    </a-button>
+                </a-form-item>
+            </a-form>
 
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="new-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel
-                    for="password_confirmation"
-                    value="Confirm Password"
-                />
-
-                <TextInput
-                    id="password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password_confirmation"
-                    required
-                    autocomplete="new-password"
-                />
-
-                <InputError
-                    class="mt-2"
-                    :message="form.errors.password_confirmation"
-                />
-            </div>
-
-            <div class="mt-4 flex items-center justify-end">
-                <Link
-                    :href="route('login')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                    Already registered?
+            <!-- Login Link -->
+            <div class="mt-6 text-center">
+                <span class="text-gray-500 mr-1">{{ t('already_registered') }}</span>
+                <Link :href="route('login')" class="text-blue-600 hover:text-blue-800 font-medium underline">
+                {{ t('login') }}
                 </Link>
-
-                <PrimaryButton
-                    class="ms-4"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                >
-                    Register
-                </PrimaryButton>
             </div>
-        </form>
-    </GuestLayout>
+        </div>
+    </div>
 </template>
+
+<style scoped>
+/* Optional: smoother input focus effect */
+.a-input,
+.a-input-password {
+    transition: all 0.2s ease-in-out;
+}
+
+.a-input:focus,
+.a-input-password:focus {
+    border-color: #1890ff;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+</style>
